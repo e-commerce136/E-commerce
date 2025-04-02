@@ -1,13 +1,11 @@
 const port = 4000;
 const express = require('express');
-const app = express();
+const app  = express();
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 const cors = require('cors');
-const Product = require('./models/Product'); // Import Product model
-const Users = require('./models/Users'); // Import Users model
 const { log } = require('console');
 
 app.use(express.json());
@@ -21,6 +19,44 @@ mongoose.connect("mongodb+srv://MohamedAyman:721999%40Feb@cluster0.as2e1.mongodb
 
 app.get("/", (req,res)=> {
     res.send("Express App is Running")
+})
+
+
+// Schema for Creating Products
+
+const Product = mongoose.model("Product", {
+    id:{
+        type: Number,
+        required:true,
+    },
+    name: {
+        type:String,
+        required:true,
+    },
+    image: {
+        type:String,
+        required:true,
+    },
+    category:{
+        type:String,
+        required:true,
+    },
+    new_price:{
+        type:Number,
+        required:true,
+    },
+    old_price:{
+        type:Number,
+        required:true,
+    },
+    date:{
+        type:Date,
+        default:Date.now,
+    },
+    available:{
+    type:Boolean,
+    default:true,
+    },
 })
 
 app.post('/addproduct', async (req,res) => {
@@ -69,6 +105,28 @@ app.get('/allproducts', async (req,res) => {
     res.send(products);
 })
 
+//schema creating for user model
+
+const Users = mongoose.model('Users', {
+    name:{
+        type:String,
+    },
+    email:{
+        type:String,
+        unique:true,
+    },
+    password:{
+        type:String,
+    },
+    cartData:{
+        type:Object,
+    },
+    date:{
+        type:Date,
+        default:Date.now,
+    }
+})
+
 // creating endpoint for registering the user
 
 app.post('/signup', async (req,res)=> {
@@ -79,7 +137,7 @@ app.post('/signup', async (req,res)=> {
     }
     let cart = {};
     for (let i = 0; i < 300; i++) {
-        cart[i] = 0;
+       cart[i] = 0;
     }
     const user = new Users({
         name:req.body.username,
@@ -102,7 +160,7 @@ app.post('/signup', async (req,res)=> {
 
 // creating endpoint for user login
 app.post('/login', async (req,res)=> {
-    let user = await Users.findOne({email:req.body.email});
+    let user  = await Users.findOne({email:req.body.email});
     if (user) {
         const passCompare = req.body.password === user.password;
         if (passCompare) {
@@ -142,21 +200,21 @@ app.get('/popularinwomen', async (req,res) => {
 
 // creating middleware to fetch user
 
-const fetchUser = async (req,res,next)=> {
-    const token = req.header('auth-token');
-    if (!token) {
-        res.status(401).send({errors:"Please authenticate using valid token"})
-    }
-    else {
-        try {
-            const data = jwt.verify(token,'secret_ecom');
-            req.user = data.user;
-            next();
-        } catch (error) {
-            res.ststus(401).send({errors:"please authenticate using a valid token"})
+    const fetchUser = async (req,res,next)=> {
+        const token = req.header('auth-token');
+        if (!token) {
+            res.status(401).send({errors:"Please authenticate using valid token"})
+        }
+        else {
+            try {
+                const data = jwt.verify(token,'secret_ecom');
+                req.user = data.user;
+                next();
+            } catch (error) {
+                res.ststus(401).send({errors:"please authenticate using a valid token"})
+            }
         }
     }
-}
 
 // creating endpoint for adding products in cartData
 
@@ -189,12 +247,12 @@ app.post('/getcart',fetchUser, async (req,res) =>{
 
 app.listen(port,(error) => {
     if(!error) {
-        console.log("Server Running on Port "+port)
+      console.log("Server Running on Port "+port)
     }
     else {
-        console.log("Error: " +error)
+      console.log("Error: " +error)
     }
-})
+  })
 
 // Image Storage Engine
 
@@ -215,4 +273,4 @@ app.post("/upload",upload.single('product'),(req,res) => {
         success:1,
         image_url: `https://e-commercebackend-silk.vercel.app:${port}/images/${req.file.filename}`
     })
-})
+}) 
