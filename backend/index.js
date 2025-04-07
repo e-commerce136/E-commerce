@@ -9,6 +9,16 @@ const cors = require('cors');
 const Product = require('./models/Product'); // Import Product model
 const Users = require('./models/Users'); // Import Users model
 const { log } = require('console');
+const cloudinary = require('cloudinary').v2;
+
+// Configure Cloudinary with your credentials
+cloudinary.config({
+  cloud_name: 'doztyiqdw', // Replace with your Cloudinary cloud name
+  api_key: '563723922896876',       // Replace with your Cloudinary API key
+  api_secret: 'X9RmNty3kEY6SyJqyoCYJgtoeeQ'  // Replace with your Cloudinary API secret
+});
+
+
 
 app.use(express.json());
 app.use(cors());
@@ -187,14 +197,7 @@ app.post('/getcart',fetchUser, async (req,res) =>{
     res.json(userData.cartData);
 })
 
-app.listen(port,(error) => {
-    if(!error) {
-        console.log("Server Running on Port ");
-    }
-    else {
-        console.log("Error: " +error)
-    }
-})
+
 
 // Image Storage Engine
 
@@ -205,7 +208,7 @@ app.listen(port,(error) => {
     }
 }) */
 
-const upload = multer({storage:storage})
+//const upload = multer({storage:storage})
 
 // Creating Upload Endpoint for images
 //app.use('/images', express.static('upload/images'))
@@ -216,3 +219,35 @@ const upload = multer({storage:storage})
         image_url: `https://e-commercebackend-silk.vercel.app:${port}/images/${req.file.filename}`
     })
 }) */
+// Set up Multer for parsing form-data
+const storage = multer.memoryStorage();  // Store images in memory
+const upload = multer({ storage: storage });  // Use memory storage for Multer
+
+// Image upload route
+app.post('/upload', upload.single('product'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send({ error: 'No file uploaded.' });
+  }
+
+  // Upload the image to Cloudinary
+  cloudinary.uploader.upload_stream(
+    { folder: 'your-folder-name' },  // Optional: specify a folder to organize your images in Cloudinary
+    (error, result) => {
+      if (error) {
+        return res.status(500).send({ error: 'Cloudinary upload failed.' });
+      }
+
+      // Send back the image URL in the response
+      res.json({
+        success: 1,
+        image_url: result.secure_url  // URL of the uploaded image
+      });
+    }
+  ).end(req.file.buffer);  // Use the buffer from Multer's memory storage
+});
+
+// Start your app
+const port = 4000;
+app.listen(port, () => {
+  console.log(`Server running `);
+});
