@@ -1,0 +1,28 @@
+# Node.js dependencies
+/node_modules
+
+# Logs
+*.log
+logs/
+
+# dotenv environment variables file
+.env
+
+# npm package lock file (optional to ignore, but can be helpful in some scenarios)
+package-lock.json
+
+# Build directories
+/dist
+/build
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Editor-specific files
+.vscode/
+.idea/
+
+# Temporary files
+*.swp
+*.swo
