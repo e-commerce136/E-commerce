@@ -1,4 +1,4 @@
-const port = 4000;
+//const port = 4000;
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
@@ -189,7 +189,7 @@ app.post('/getcart',fetchUser, async (req,res) =>{
 
 app.listen(port,(error) => {
     if(!error) {
-        console.log("Server Running on Port "+port)
+        console.log("Server Running on Port ");
     }
     else {
         console.log("Error: " +error)
@@ -198,21 +198,21 @@ app.listen(port,(error) => {
 
 // Image Storage Engine
 
-const storage = multer.diskStorage({
+/* const storage = multer.diskStorage({
     destination: './upload/images',
     filename:(req,file,cb)=>{
         return cb(null,`${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
     }
-})
+}) */
 
 const upload = multer({storage:storage})
 
 // Creating Upload Endpoint for images
-app.use('/images', express.static('upload/images'))
+//app.use('/images', express.static('upload/images'))
 
-app.post("/upload",upload.single('product'),(req,res) => {
+/* app.post("/upload",upload.single('product'),(req,res) => {
     res.json({
         success:1,
         image_url: `https://e-commercebackend-silk.vercel.app:${port}/images/${req.file.filename}`
     })
-})
+}) */
