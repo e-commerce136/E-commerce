@@ -13,9 +13,9 @@ const cloudinary = require('cloudinary').v2;
 
 // Configure Cloudinary with your credentials
 cloudinary.config({
-  cloud_name: 'doztyiqdw', // Replace with your Cloudinary cloud name
-  api_key: '563723922896876',       // Replace with your Cloudinary API key
-  api_secret: 'X9RmNty3kEY6SyJqyoCYJgtoeeQ'  // Replace with your Cloudinary API secret
+  cloud_name: 'dvu1pchvc', // Replace with your Cloudinary cloud name
+  api_key: '431421339498768',       // Replace with your Cloudinary API key
+  api_secret: 'LgAvBvBDtxftRCcQwLTPydJIlM4'  // Replace with your Cloudinary API secret
 });
 
 
